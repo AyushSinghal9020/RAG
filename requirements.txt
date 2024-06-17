@@ -1,0 +1,9 @@
+cohere
+PyPDF2
+streamlit
+langchain
+faiss-cpu
+langchain_core
+langchain_cohere
+langchain_community
+sentence-transformers
