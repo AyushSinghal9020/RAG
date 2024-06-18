@@ -1,4 +1,8 @@
 import streamlit as st
+from PIL import Image
+import requests
+from io import BytesIO
+from image_data import image_data
 import PyPDF2
 from langchain.vectorstores import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
@@ -53,3 +57,36 @@ Query : {}
         response = chat.invoke(messages).content
 
         st.write(response)
+
+# Function to load image from a URL
+def load_image(url):
+    response = requests.get(url)
+    response.raise_for_status()
+    img = Image.open(BytesIO(response.content))
+    return img
+
+# Function to search for images based on query
+def search_images(query):
+    results = []
+    query_lower = query.lower()
+    for image in image_data:
+        if any(query_lower in tag.lower() for tag in image["tags"]):
+            results.append(image["url"])
+    return results
+
+# Streamlit app
+st.title("Image Search App")
+
+# Input form for user query
+query = st.text_input("Enter a query to search for images:")
+
+# Search and display the images
+if query:
+    matched_images = search_images(query)
+    if matched_images:
+        st.write(f"Found {len(matched_images)} images for query: '{query}'")
+        for url in matched_images:
+            img = load_image(url)
+            st.image(img, caption=url.split('/')[-1], use_column_width=True)
+    else:
+        st.write(f"No images found for query: '{query}'")
