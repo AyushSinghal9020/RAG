@@ -4,6 +4,7 @@ from langchain.vectorstores import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain_core.messages import HumanMessage
 from langchain_cohere import ChatCohere
+from video_data import video_data
 
 file = st.file_uploader('Upload a PDF file' , type = ['pdf'])
 
@@ -53,3 +54,28 @@ Query : {}
         response = chat.invoke(messages).content
 
         st.write(response)
+
+# Function to search for videos based on query
+def search_videos(query):
+    results = []
+    query_lower = query.lower()
+    for video in video_data:
+        if any(query_lower in tag.lower() for tag in video["tags"]):
+            results.append(video["url"])
+    return results
+
+# Streamlit app
+st.title("Video Search App")
+
+# Input form for user query
+query = st.text_input("Enter a query to search for videos:")
+
+# Search and display the videos
+if query:
+    matched_videos = search_videos(query)
+    if matched_videos:
+        st.write(f"Found {len(matched_videos)} videos for query: '{query}'")
+        for url in matched_videos:
+            st.video(url, start_time=0)
+    else:
+        st.write(f"No videos found for query: '{query}'")
