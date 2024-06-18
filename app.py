@@ -43,6 +43,8 @@ You are a conversational chatbot, your task is to answer questions based on the 
 
 Try to answer in markdown format. to format, images or any links as well
 
+Your code will be directly sent to a markdown renderer
+
 Context : {}
 
 Query : {}
