@@ -41,6 +41,8 @@ if file is not None :
         prompt = '''
 You are a conversational chatbot, your task is to answer questions based on the context provided.
 
+Try to answer in markdown format. to format, images or any links as well
+
 Context : {}
 
 Query : {}
@@ -49,7 +51,9 @@ Query : {}
         prompt = prompt.format(context , query)
 
         messages = [HumanMessage(content = prompt)]
-        
+
         response = chat.invoke(messages).content
 
-        st.write(response)
+        open('file.txt' , 'w').write(response)
+
+        st.markdown(response)
